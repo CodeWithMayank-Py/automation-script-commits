@@ -17,7 +17,7 @@ def make_commit():
     repo = Repo(repo_path)
     
     # Make 20 commits
-    for _ in range(14):
+    for _ in range(4):
         # Update the file with a new commit
         update_file()
         
@@ -28,7 +28,7 @@ def make_commit():
         repo.index.commit("Automated commit at " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         
         # Wait a short time to simulate different commit times
-        time.sleep(10)
+        time.sleep(5)
     
     # Push the changes
     origin = repo.remote(name='origin')

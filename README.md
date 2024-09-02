@@ -1,1 +1,0 @@
-# automation-script-commits-new

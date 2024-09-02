@@ -1,38 +1,44 @@
 import os
+import git
 from datetime import datetime
-from git import Repo
+import pytz
 import time
 
-# Define the repository path and file to update
-repo_path = os.path.abspath('.')
-file_path = os.path.join(repo_path, 'daily_commit.txt')
+# Define your local time zone
+local_tz = pytz.timezone('Asia/Kolkata')  # e.g., 'America/New_York'
 
-def update_file():
-    # Write the current timestamp to the file
-    with open(file_path, 'w') as file:
-        file.write(f"Commit made on {datetime.now()}\n")
+# Set up repository path
+repo_path = os.getcwd()
 
-def make_commit():
-    # Initialize the repository
-    repo = Repo(repo_path)
-    
-    # Make 20 commits
-    for _ in range(4):
-        # Update the file with a new commit
-        update_file()
+def make_commits(n):
+    try:
+        repo = git.Repo(repo_path)
+        origin = repo.remote(name='origin')
         
-        # Stage the changes
-        repo.git.add(file_path)
-        
-        # Commit the changes
-        repo.index.commit("Automated commit at " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        
-        # Wait a short time to simulate different commit times
-        time.sleep(5)
-    
-    # Push the changes
-    origin = repo.remote(name='origin')
-    origin.push()
+        for i in range(n):
+            commit_message = f"Automated commit {i+1} at {datetime.now(local_tz).strftime('%Y-%m-%d %H:%M:%S')}"
+            
+            # Create a dummy file to commit
+            file_name = f"dummy_file_{i+1}.txt"
+            with open(file_name, 'w') as f:
+                f.write(f"This is commit number {i+1}")
+
+            # Add all changes to the staging area
+            repo.git.add(A=True)
+            
+            # Commit changes
+            repo.index.commit(commit_message)
+            
+            # Push changes
+            origin.push()
+            
+            print(f"Committed and pushed changes: {commit_message}")
+            
+            # Optionally, wait for a short period before the next commit
+            time.sleep(5)  # sleep for 5 seconds (adjust as needed)
+
+    except Exception as e:
+        print(f"Error lines received while fetching: {e}")
 
 if __name__ == "__main__":
-    make_commit()
+    make_commits(15)

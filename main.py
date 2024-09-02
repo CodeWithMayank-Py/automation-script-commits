@@ -18,7 +18,7 @@ def make_commits(n):
         repo = git.Repo(repo_path)
         origin = repo.remote(name='origin')
         
-        for i in range(4):
+        for i in range(40):
             # Update the content of the same file
             with open(file_name, 'w') as f:
                 f.write(f"Updated content for commit at {datetime.now(local_tz).strftime('%Y-%m-%d %H:%M:%S')}\n")

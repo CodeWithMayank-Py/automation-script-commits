@@ -5,28 +5,29 @@ import pytz
 import time
 
 # Define your local time zone
-local_tz = pytz.timezone('Asia/Kolkata')  # e.g., 'America/New_York'
+local_tz = pytz.timezone('Your/Timezone')  # e.g., 'America/New_York'
 
 # Set up repository path
 repo_path = os.getcwd()
+
+# Define the file to be updated
+file_name = 'daily_commit.txt'
 
 def make_commits(n):
     try:
         repo = git.Repo(repo_path)
         origin = repo.remote(name='origin')
         
-        for i in range(n):
-            commit_message = f"Automated commit {i+1} at {datetime.now(local_tz).strftime('%Y-%m-%d %H:%M:%S')}"
-            
-            # Create a dummy file to commit
-            file_name = f"dummy_file_{i+1}.txt"
+        for i in range(4):
+            # Update the content of the same file
             with open(file_name, 'w') as f:
-                f.write(f"This is commit number {i+1}")
-
-            # Add all changes to the staging area
-            repo.git.add(A=True)
+                f.write(f"Updated content for commit at {datetime.now(local_tz).strftime('%Y-%m-%d %H:%M:%S')}\n")
+            
+            # Add changes to the staging area
+            repo.git.add(file_name)
             
             # Commit changes
+            commit_message = f"Automated commit {i+1} at {datetime.now(local_tz).strftime('%Y-%m-%d %H:%M:%S')}"
             repo.index.commit(commit_message)
             
             # Push changes

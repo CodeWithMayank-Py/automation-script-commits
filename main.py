@@ -5,7 +5,7 @@ import pytz
 import time
 
 # Define your local time zone
-local_tz = pytz.timezone('Your/Timezone')  # e.g., 'America/New_York'
+local_tz = pytz.timezone('Asia/Kolkata')  # e.g., 'Asia/Kolkata'
 
 # Set up repository path
 repo_path = os.getcwd()

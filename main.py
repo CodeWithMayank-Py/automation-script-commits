@@ -28,7 +28,7 @@ def make_commits():
         
         for i in range(num_commits):
             # Update the content of the same file
-            with open(file_name, 'w') as f:
+            with open(file_name, 'a') as f:  # Append mode
                 f.write(f"Updated content for commit {i+1} at {datetime.now(local_tz).strftime('%Y-%m-%d %H:%M:%S')}\n")
             
             # Add changes to the staging area
@@ -38,13 +38,19 @@ def make_commits():
             commit_message = f"Automated commit {i+1} at {datetime.now(local_tz).strftime('%Y-%m-%d %H:%M:%S')}"
             repo.index.commit(commit_message)
             
-            # Push changes
-            origin.push()
-            
+            # Push changes with retry logic
+            for attempt in range(3):  # Retry up to 3 times
+                try:
+                    origin.push()
+                    break  # If successful, break the loop
+                except Exception as push_error:
+                    print(f"Push failed, retrying... ({attempt+1}/3)")
+                    time.sleep(5)
+
             print(f"Committed and pushed changes: {commit_message}")
             
-            # Optionally, wait for a short period before the next commit
-            time.sleep(5)  # sleep for 5 seconds (adjust as needed)
+            # Wait for a short period before the next commit
+            time.sleep(10)  # sleep for 10 seconds
 
     except Exception as e:
         print(f"Error lines received while fetching: {e}")

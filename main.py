@@ -11,12 +11,9 @@ local_tz = pytz.timezone('Asia/Kolkata')
 # Set up repository path
 repo_path = os.getcwd()
 
-# Define the file to be updated
-file_name = 'daily_commit.txt'
-
 # Define the range for random commits
-min_commits = 10
-max_commits = 15
+min_commits = 20
+max_commits = 25
 
 def make_commits():
     try:
@@ -26,13 +23,23 @@ def make_commits():
         repo = git.Repo(repo_path)
         origin = repo.remote(name='origin')
         
+        previous_file_name = None
+        
         for i in range(num_commits):
-            # Update the content of the same file with a timestamp
-            with open(file_name, 'a') as f:
-                f.write(f"Updated content for commit {i+1} at {datetime.now(local_tz).strftime('%Y-%m-%d %H:%M:%S')}\n")
+            # Create a new file name based on the current timestamp
+            file_name = f"commit_file_{i+1}_{datetime.now(local_tz).strftime('%Y%m%d_%H%M%S')}.txt"
+
+            # Create the new file and write content
+            with open(file_name, 'w') as f:
+                f.write(f"Commit {i+1} at {datetime.now(local_tz).strftime('%Y-%m-%d %H:%M:%S')}\n")
             
             # Add changes to the staging area
             repo.git.add(file_name)
+
+            # If there was a previous file, delete it and stage the deletion
+            if previous_file_name:
+                os.remove(previous_file_name)
+                repo.git.rm(previous_file_name)
             
             # Commit changes
             commit_message = f"Automated commit {i+1} at {datetime.now(local_tz).strftime('%Y-%m-%d %H:%M:%S')}"
@@ -40,7 +47,12 @@ def make_commits():
             
             # Push changes
             origin.push()
-
+            
+            print(f"Committed and pushed changes: {commit_message}")
+            
+            # Set the current file as the previous file for the next iteration
+            previous_file_name = file_name
+            
             # Wait for a short period before the next commit
             time.sleep(2)  # Reduce sleep time to 2 seconds
 
